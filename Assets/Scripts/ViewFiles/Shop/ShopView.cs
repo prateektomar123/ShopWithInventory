@@ -22,7 +22,10 @@ public class ShopView : MonoBehaviour
             { ItemModel.ItemType.Consumables, potionsPanel }
         };
     }
-
+    private void Start()
+    {
+       InitializePanels();
+    }
     public void InitializePanels()
     {
         SpawnItemsInPanel(ItemModel.ItemType.Food);
@@ -44,7 +47,7 @@ public class ShopView : MonoBehaviour
             ItemSlot itemSlot = slot.GetComponent<ItemSlot>();
             itemSlot.Setup(item, ShopModel.Instance.GetItemQuantity(item));
         }
-
+        Debug.Log("SHOP: " + type);
         Debug.Log($"Spawned {items.Count} items in {type} panel.");
     }
 
