@@ -24,7 +24,7 @@ public class ItemModel : ScriptableObject
     public ItemType type;
     public Sprite Icon;
     public string Itemdescription;
-    public int buyingPrice;
+    public int BuyingPrice;
     public int sellingPrice;
     public int Weight;
     public int Quantity;
