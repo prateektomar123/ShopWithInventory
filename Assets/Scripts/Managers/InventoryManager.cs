@@ -5,9 +5,14 @@ using UnityEngine;
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance { get; private set; }
+
     [SerializeField] private Dictionary<ItemModel, int> inventoryItems = new Dictionary<ItemModel, int>();
-    [SerializeField] private int MaxWeight = 100;
-    private int CurrentWeight = 0;
+    [SerializeField] private int maxWeight = 100;
+    private int currentWeight = 0;
+
+    
+    public delegate void InventoryChangedHandler();
+    public event InventoryChangedHandler OnInventoryChanged;
 
     void Awake()
     {
@@ -21,38 +26,56 @@ public class InventoryManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    void Start() { UpdateWeight(); Debug.Log("Inventory started empty."); }
+
+    void Start()
+    {
+        UpdateWeight();
+        Debug.Log("Inventory started empty.");
+    }
 
     public bool AddItem(ItemModel item, int quantity)
     {
-        int newWeight = CurrentWeight + (item.Weight * quantity);
-        if (newWeight > MaxWeight) return false;
+        if (item == null || quantity <= 0) return false;
 
-        int currentCount = inventoryItems.Values.Sum();
-        if (currentCount + quantity > 16) return false;
+        
+        int newWeight = currentWeight + (item.Weight * quantity);
+        if (newWeight > maxWeight)
+        {
+            Debug.Log($"Can't add item - weight exceeds maximum ({newWeight} > {maxWeight})");
+            return false;
+        }
 
+        
         if (inventoryItems.ContainsKey(item))
             inventoryItems[item] += quantity;
         else
             inventoryItems.Add(item, quantity);
 
+       
         UpdateWeight();
+        OnInventoryChanged?.Invoke();
+
         return true;
     }
 
     public void RemoveItem(ItemModel item, int quantity)
     {
+        if (item == null || quantity <= 0) return;
+
         if (inventoryItems.ContainsKey(item) && inventoryItems[item] >= quantity)
         {
             inventoryItems[item] -= quantity;
-            if (inventoryItems[item] <= 0) inventoryItems.Remove(item);
+            if (inventoryItems[item] <= 0)
+                inventoryItems.Remove(item);
+
             UpdateWeight();
+            OnInventoryChanged?.Invoke();
         }
     }
 
     private void UpdateWeight()
     {
-        CurrentWeight = inventoryItems.Sum(pair => pair.Key.Weight * pair.Value);
+        currentWeight = inventoryItems.Sum(pair => pair.Key.Weight * pair.Value);
     }
 
     public Dictionary<ItemModel, int> GetInventoryItems()
@@ -62,6 +85,31 @@ public class InventoryManager : MonoBehaviour
 
     public int GetCurrentWeight()
     {
-        return CurrentWeight;
+        return currentWeight;
+    }
+
+    public int GetMaxWeight()
+    {
+        return maxWeight;
+    }
+
+    public bool IsAtWeightLimit()
+    {
+        
+        return currentWeight >= maxWeight * 0.9f;
+    }
+
+    public int GetItemQuantity(ItemModel item)
+    {
+        if (inventoryItems.ContainsKey(item))
+            return inventoryItems[item];
+        return 0;
+    }
+
+    public bool HasItem(ItemModel item, int quantity)
+    {
+        if (inventoryItems.ContainsKey(item))
+            return inventoryItems[item] >= quantity;
+        return false;
     }
 }
