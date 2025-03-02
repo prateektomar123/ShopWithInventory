@@ -20,7 +20,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
     private int quantity;
     private bool isShopItem;
 
-    public void Setup(ItemModel itemModel, int itemQuantity, bool isFromShop = false)
+    public void Setup(ItemModel itemModel, int itemQuantity, bool isFromShop)
     {
         item = itemModel;
         quantity = itemQuantity;

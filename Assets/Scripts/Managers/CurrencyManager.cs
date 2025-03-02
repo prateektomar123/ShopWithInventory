@@ -22,6 +22,7 @@ public class CurrencyManager : MonoBehaviour
     void Start()
     {
         Debug.Log($"Currency started with {gold} gold.");
+        //AddGold(1000);
     }
 
     public bool CanAfford(int cost)

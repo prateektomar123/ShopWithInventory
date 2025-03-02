@@ -51,7 +51,7 @@ public class InventoryView : MonoBehaviour
             if (pair.Key.type == type)
             {
                 GameObject slot = Instantiate(itemSlotPrefab, panel.transform);
-                slot.GetComponent<ItemSlot>().Setup(pair.Key, pair.Value);
+                slot.GetComponent<ItemSlot>().Setup(pair.Key, pair.Value,false);
             }
         }
 

@@ -45,7 +45,7 @@ public class ShopView : MonoBehaviour
         {
             GameObject slot = Instantiate(itemSlotPrefab, panel.transform);
             ItemSlot itemSlot = slot.GetComponent<ItemSlot>();
-            itemSlot.Setup(item, ShopModel.Instance.GetItemQuantity(item));
+            itemSlot.Setup(item, ShopModel.Instance.GetItemQuantity(item),true);
         }
         Debug.Log("SHOP: " + type);
         Debug.Log($"Spawned {items.Count} items in {type} panel.");
